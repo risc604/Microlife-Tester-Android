@@ -394,7 +394,7 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
             {
                 stringBuilder.append(format("%02X", byteChar));
                 InsertText(String.format("%02X", byteChar), 1);
-                Utils.writeFile(this.getActivity(), txtFileName,
+                Utils.writeFile(this.getActivity(), "/sdcard/" + txtFileName,
                                 String.format("%02X", byteChar));
             }
 
