@@ -30,7 +30,9 @@ import com.esignal.MicrolifeTester.Ble.BleServiceListener;
 import com.esignal.MicrolifeTester.CCallBack;
 import com.esignal.MicrolifeTester.CallBack;
 import com.esignal.MicrolifeTester.R;
+import com.esignal.MicrolifeTester.Utils;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -62,11 +64,12 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
     private boolean isServiceDiscover = false;
     private boolean readDataFlag = false;
 
-    private String mStringBuffer;
-    private ImageView mConnectionView;
-    private TextView mDataText;
-    private TextView mCheckText;
-    private ScrollView mScroller;
+    private String      mStringBuffer;
+    private ImageView   mConnectionView;
+    private TextView    mDataText;
+    private TextView    mCheckText;
+    private ScrollView  mScroller;
+    private File        dirPath;
 
     private Button mTestButton;
     private final static UUID UUID_Notify = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
@@ -126,6 +129,7 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
     {
         super.onActivityCreated(savedInstanceState);
         mDataText.setText("");
+       // logFile =
         mTestButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -257,7 +261,6 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
             for (int x = 0; x < mCount; x++)
             {
                 final BluetoothGattCharacteristic dataChar = service.getCharacteristics().get(x);
-
                 final int charaProp = dataChar.getProperties();
 
                 //InsertText("SD ID: " + service.getUuid());
@@ -371,6 +374,12 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
         //}
     }
 
+    Calendar cal = Calendar.getInstance();
+    String txtFileName = Integer.toString(cal.get(Calendar.YEAR)) +
+                                    Integer.toString((cal.get(Calendar.MONTH))+1) +
+                                    Integer.toString(cal.get(Calendar.DATE)) +
+                                    Integer.toString(cal.get(Calendar.HOUR)) +
+                                    Integer.toString(cal.get(Calendar.MINUTE)) + ".txt";
     @Override
     public void onDataAvailable(String serviceUUid, final String characteristicUUid, String text, byte[] data) {
         final StringBuilder stringBuilder = new StringBuilder(data.length);
@@ -385,7 +394,11 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
             {
                 stringBuilder.append(format("%02X", byteChar));
                 InsertText(String.format("%02X", byteChar), 1);
+                Utils.writeFile(this.getActivity(), txtFileName,
+                                String.format("%02X", byteChar));
             }
+
+            Log.d("FileName", txtFileName);
         }
         //InsertText("FFF1 Receive: " + ASCII);
         //Byte.parseByte(ASCII, 16);
