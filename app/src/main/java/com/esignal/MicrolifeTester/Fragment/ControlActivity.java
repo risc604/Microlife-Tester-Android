@@ -69,7 +69,7 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
     private TextView    mDataText;
     private TextView    mCheckText;
     private ScrollView  mScroller;
-    private File        dirPath;
+    //private File        dirPath;
 
     private Button mTestButton;
     private final static UUID UUID_Notify = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
@@ -378,13 +378,20 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
     String txtFileName = Integer.toString(cal.get(Calendar.YEAR)) +
                                     Integer.toString((cal.get(Calendar.MONTH))+1) +
                                     Integer.toString(cal.get(Calendar.DATE)) +
-                                    Integer.toString(cal.get(Calendar.HOUR)) +
-                                    Integer.toString(cal.get(Calendar.MINUTE)) + ".txt";
+                                    Integer.toString(cal.get(Calendar.HOUR_OF_DAY)) +
+                                    /*Integer.toString(cal.get(Calendar.MINUTE)) +*/ ".txt";
+    private File txtFile = new File("/sdcard/" + txtFileName);
+
     @Override
-    public void onDataAvailable(String serviceUUid, final String characteristicUUid, String text, byte[] data) {
+    public void onDataAvailable(String serviceUUid, final String characteristicUUid, String text, byte[] data)
+    {
         final StringBuilder stringBuilder = new StringBuilder(data.length);
         //String ASCII = new String(data);
         //if(characteristicUUid.equals(UUID_Notify))
+
+        Utils.writeFile(this.getActivity(), txtFile, "\n\r" + Integer.toString(cal.get(Calendar.MINUTE)) + ":" +
+                                                Integer.toString(cal.get(Calendar.SECOND))+ ": "
+                                                /*Integer.toString(cal.get(C))*/  );
 
         //Log.d("TAG", characteristicUUid);
         //if(characteristicUUid.equals(UUID_Notify) || characteristicUUid.equals(UUID_Write))
@@ -394,10 +401,10 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
             {
                 stringBuilder.append(format("%02X", byteChar));
                 InsertText(String.format("%02X", byteChar), 1);
-                Utils.writeFile(this.getActivity(), "/sdcard/" + txtFileName,
-                                String.format("%02X", byteChar));
-            }
 
+                Utils.writeFile(this.getActivity(), txtFile, String.format("%02X", byteChar));
+            }
+            //Utils.writeFile(this.getActivity(), txtFile, stringBuilder.substring(0));
             Log.d("FileName", txtFileName);
         }
         //InsertText("FFF1 Receive: " + ASCII);
@@ -414,7 +421,6 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
             //{
             //    mCheckText.setText("Error");
             //}
-
     }
 
     //onServiceConnected and onServiceDisconnected method listen BleService event
@@ -434,13 +440,11 @@ public class ControlActivity extends Fragment implements BleServiceListener, Ser
 
         InsertText("DviceName: " + deviceName, 9);
         InsertText("MacAddress: " + deviceAddress, 9);
-
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name)
     {
-
         bleService = null;
     }
 
