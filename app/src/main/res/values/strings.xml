@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Microlife Tester</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="unknown_device">Unknow Device</string>
+    <string name="dialog_enable_bluetooth">Enable Bluetooth</string>
+    <string name="dialog_turn_on">Turn ON</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="scan">Scan</string>
+    <string name="title_ble">Microlife Tester</string>
+    <string name="title_setting">Microlife Tester</string>
+</resources>
